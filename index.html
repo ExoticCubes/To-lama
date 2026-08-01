@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Tiana 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF6E9;
+    --paper:#FFFDF7;
+    --rose:#6FA98A;
+    --rose-deep:#2F6B4F;
+    --gold:#C9A15B;
+    --ink:#2E3B2E;
+    --ink-soft:#6E7A64;
+    --shadow: 0 20px 60px -20px rgba(46,59,46,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:
+      radial-gradient(ellipse at 20% 0%, #E8F0E1 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, #F3E7C3 0%, transparent 55%),
+      var(--cream);
+    font-family:'Quicksand', sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+
+  .display{ font-family:'Cormorant Garamond', serif; }
+
+  /* ambient floating petals */
+  #petals{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .petal{
+    position:absolute; top:-40px; opacity:0.55;
+    animation: fall linear infinite;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(-5vh) translateX(0) rotate(0deg); }
+    100%{ transform: translateY(105vh) translateX(var(--drift,20px)) rotate(360deg); }
+  }
+
+  .stage{
+    position:relative; z-index:1;
+    min-height:100dvh;
+    display:flex; align-items:center; justify-content:center;
+    padding: 32px 18px;
+  }
+
+  .scene{
+    width:100%; max-width: 560px;
+    display:none;
+  }
+  .scene.active{ display:block; animation: rise 0.7s cubic-bezier(.2,.8,.2,1) both; }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(18px) scale(0.98); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  /* ---- Envelope intro ---- */
+  #envelope-wrap{ display:flex; flex-direction:column; align-items:center; gap:28px; text-align:center; }
+
+  .envelope{
+    width:260px; height:170px;
+    position:relative;
+    cursor:pointer;
+    filter: drop-shadow(0 18px 30px rgba(201,122,138,0.35));
+  }
+  .env-body{
+    position:absolute; inset:0;
+    background: var(--paper);
+    border:1.5px solid #DCE8D4;
+    border-radius:10px;
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    clip-path: polygon(0 0, 50% 55%, 100% 0);
+    background: linear-gradient(160deg, var(--rose) 0%, var(--rose-deep) 100%);
+    border-radius:10px 10px 0 0;
+    transform-origin: top;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+  }
+  .envelope.open .env-flap{ transform: rotateX(180deg); }
+  .seal{
+    position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #D9AE6A, var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; color:#fff8ec; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: opacity 0.4s ease;
+    z-index:2;
+  }
+  .envelope.open .seal{ opacity:0; }
+
+  .hint{ color:var(--ink-soft); font-size:0.9rem; letter-spacing:0.02em; }
+
+  /* ---- cards ---- */
+  .card{
+    background: var(--paper);
+    border-radius: 22px;
+    padding: 42px 34px;
+    box-shadow: var(--shadow);
+    border: 1px solid #DDE9D6;
+    text-align:center;
+  }
+
+  .eyebrow{
+    font-size:0.72rem; letter-spacing:0.16em; text-transform:uppercase;
+    color: var(--rose-deep); font-weight:600; margin-bottom:14px;
+  }
+
+  h1.display{ font-size: 2.1rem; font-weight:600; margin: 0 0 8px; color:var(--ink); }
+  h2.display{ font-size: 1.7rem; font-weight:600; margin: 0 0 26px; line-height:1.35; }
+
+  p.sub{ color:var(--ink-soft); font-size:1rem; margin: -14px 0 26px; }
+
+  .choices{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+
+  .choice-btn{
+    flex:1 1 180px;
+    background: var(--cream);
+    border:1.5px solid #D8E6CE;
+    border-radius:16px;
+    padding: 20px 16px;
+    font-family:'Quicksand', sans-serif;
+    font-size:1.02rem; font-weight:600;
+    color: var(--ink);
+    cursor:pointer;
+    transition: all 0.25s ease;
+  }
+  .choice-btn:hover, .choice-btn:focus-visible{
+    background: linear-gradient(160deg, var(--rose) 0%, var(--rose-deep) 100%);
+    color:#fff; transform: translateY(-3px);
+    box-shadow: 0 10px 22px -8px rgba(201,122,138,0.55);
+    outline:none;
+  }
+  .choice-btn:disabled{ opacity:0.55; cursor:default; transform:none; }
+  .choice-btn:disabled:hover{ background:var(--cream); color:var(--ink); transform:none; box-shadow:none; }
+  .choice-emoji{ display:block; font-size:1.6rem; margin-bottom:8px; }
+
+  .progress{ display:flex; gap:6px; justify-content:center; margin-top:28px; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:#DCE8D4; transition: background 0.3s; }
+  .dot.filled{ background: var(--rose-deep); }
+
+  /* ---- final scene ---- */
+  .gif-frame{
+    width:100%; max-width:280px; margin: 8px auto 22px;
+    border-radius:18px; overflow:hidden;
+    border: 4px solid var(--paper);
+    box-shadow: 0 14px 30px -12px rgba(74,59,69,0.35);
+    aspect-ratio: 1/1;
+    background: linear-gradient(160deg, #E4F0DC, #F3E9C5);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .heart-anim{ width:120px; height:120px; }
+  .heart-anim path{ animation: beat 1.1s ease-in-out infinite; transform-origin:center; }
+  .heart-alt{ font-size:64px; line-height:1; animation: beat 1.1s ease-in-out infinite; transform-origin:center; }
+  @keyframes beat{ 0%,100%{ transform:scale(1);} 25%{ transform:scale(1.12);} 40%{ transform:scale(0.98);} }
+
+  .message{ font-size:1.05rem; line-height:1.7; color:var(--ink); margin-bottom:6px; }
+  .signature{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.2rem; color:var(--rose-deep); margin-top:18px; }
+
+  .recap{ font-size:0.85rem; color:var(--ink-soft); margin-top:18px; padding-top:18px; border-top:1px dashed #DCE8D4; }
+
+  @media (max-width:420px){
+    .card{ padding:32px 22px; }
+    h1.display{ font-size:1.8rem; }
+    h2.display{ font-size:1.4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .petal{ animation:none; display:none; }
+    .scene.active{ animation:none; }
+    .heart-anim path{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<div class="stage">
+
+  <!-- Scene 0: envelope -->
+  <div class="scene active" id="scene-0">
+    <div id="envelope-wrap">
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the letter">
+        <div class="env-body"></div>
+        <div class="seal">N+T</div>
+        <div class="env-flap"></div>
+      </div>
+      <div class="hint">tap the letter, princess Tiana 👑</div>
+    </div>
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="scene" id="scene-1">
+    <div class="card">
+      <div class="eyebrow">a little note</div>
+      <h1 class="display">Hi Lama 🤍</h1>
+      <p class="sub">Since we can't hang out right now, I made you this instead. Two quick choices, and something sweet at the end.</p>
+      <div class="choices">
+        <button class="choice-btn" onclick="choose(1,'cozy')"><span class="choice-emoji">🍿</span>Popcorn night</button>
+        <button class="choice-btn" id="wrong-btn" onclick="wrongAnswer(event)"><span class="choice-emoji">🙅</span>Nothing</button>
+      </div>
+      <div id="wrong-msg" style="min-height:22px; margin-top:14px; font-size:0.9rem; color:var(--rose-deep); font-weight:600;"></div>
+      <div class="progress"><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="scene" id="scene-2">
+    <div class="card">
+      <div class="eyebrow">good choice</div>
+      <h2 class="display" id="scene2-title">Now, what's the vibe?</h2>
+      <div class="choices">
+        <button class="choice-btn" onclick="choose(2,'anime')"><span class="choice-emoji">🌸</span>Old anime shows</button>
+        <button class="choice-btn" onclick="choose(2,'disney')"><span class="choice-emoji">🏰</span>Disney movies</button>
+      </div>
+      <div class="progress"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="scene" id="scene-3">
+    <div class="card">
+      <div class="eyebrow">almost there</div>
+      <h2 class="display">And how should it happen?</h2>
+      <div class="choices">
+        <button class="choice-btn" onclick="choose(3,'call')"><span class="choice-emoji">📱</span>Video call, same movie</button>
+        <button class="choice-btn" onclick="choose(3,'sync')"><span class="choice-emoji">😂</span>In my dreams</button>
+      </div>
+      <div class="progress"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div>
+    </div>
+  </div>
+
+  <!-- Scene 4: final -->
+  <div class="scene" id="scene-4">
+    <div class="card">
+      <div class="eyebrow">the actual point of this website</div>
+      <h1 class="display">So, Lama...</h1>
+      <div class="gif-frame">
+        <svg class="heart-anim" id="heart-default" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#2F6B4F" d="M50 88 C 20 65, 5 45, 5 28 C 5 12, 18 2, 32 2 C 42 2, 48 8, 50 15 C 52 8, 58 2, 68 2 C 82 2, 95 12, 95 28 C 95 45, 80 65, 50 88 Z"/>
+        </svg>
+        <div class="heart-alt" id="heart-alt" style="display:none;">😂</div>
+      </div>
+      <p class="message" id="final-message"></p>
+      <p class="message" id="cta-line" style="margin-top:14px; opacity:0;">Want to watch something together sometime? 🎥💛</p>
+
+      <div class="yn-choices" id="yn-choices" style="display:none; opacity:0; transition:opacity 0.5s ease; margin-top:22px;">
+        <div class="choices" style="margin-top:0;">
+          <button class="choice-btn" id="yn-yes" onclick="respond('yes')" style="flex:1 1 100px;">Yes 💛</button>
+          <button class="choice-btn" id="yn-no" onclick="respond('no')" style="flex:1 1 100px;">No</button>
+        </div>
+        <p class="message" id="yn-response" style="margin-top:16px; min-height:24px;"></p>
+      </div>
+
+      <div class="signature">Tamer</div>
+      <div class="recap" id="recap"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ambient petals
+  const petalWrap = document.getElementById('petals');
+  const petalEmojis = ['🐸','👑','🐱'];
+  for(let i=0;i<16;i++){
+    const p = document.createElement('div');
+    p.className='petal';
+    p.textContent = petalEmojis[Math.floor(Math.random()*petalEmojis.length)];
+    p.style.left = Math.random()*100+'vw';
+    p.style.fontSize = (10+Math.random()*14)+'px';
+    p.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    p.style.animationDuration = (10+Math.random()*10)+'s';
+    p.style.animationDelay = (Math.random()*10)+'s';
+    petalWrap.appendChild(p);
+  }
+
+  const envelope = document.getElementById('envelope');
+  function openEnvelope(){
+    envelope.classList.add('open');
+    setTimeout(()=> goTo(1), 550);
+  }
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') openEnvelope(); });
+
+  const answers = {};
+
+  const labels = {
+    cozy:'popcorn',
+    anime:'old anime shows', disney:'Disney movies',
+    call:'on a video call', sync:'in my dreams 😂'
+  };
+
+  const wrongLines = ['ehh, wrong answer 😅','try again 👀','nope, pick the other one','still wrong 🙈','come on, you know the answer'];
+  let wrongCount = 0;
+  function wrongAnswer(e){
+    const btn = e.currentTarget;
+    const msg = document.getElementById('wrong-msg');
+    msg.textContent = wrongLines[Math.min(wrongCount, wrongLines.length-1)];
+    wrongCount++;
+    btn.style.transition = 'transform 0.12s ease';
+    btn.style.transform = 'translateX(-6px)';
+    setTimeout(()=>{ btn.style.transform='translateX(6px)'; }, 120);
+    setTimeout(()=>{ btn.style.transform='translateX(0)'; }, 240);
+  }
+
+  function choose(step, value){
+    answers[step] = value;
+    goTo(step+1);
+    if(step===3){ buildFinal(); }
+  }
+
+  function goTo(n){
+    document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+    document.getElementById('scene-'+n).classList.add('active');
+  }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function typeText(el, text, speed, onDone){
+    if(prefersReducedMotion){ el.textContent = text; if(onDone) onDone(); return; }
+    el.textContent = '';
+    let i = 0;
+    (function step(){
+      if(i <= text.length){
+        el.textContent = text.slice(0, i);
+        i++;
+        setTimeout(step, speed);
+      } else if(onDone){ onDone(); }
+    })();
+  }
+
+  function buildFinal(){
+    const snack = labels[answers[1]];
+    const genre = labels[answers[2]];
+    const modeKey = answers[3];
+    const mode = labels[modeKey];
+
+    const heartDefault = document.getElementById('heart-default');
+    const heartAlt = document.getElementById('heart-alt');
+    const finalMsgEl = document.getElementById('final-message');
+    const cta = document.getElementById('cta-line');
+
+    let mainLine, ctaLine;
+    if(modeKey === 'sync'){
+      mainLine = "Can't blame a guy for trying 😂";
+      ctaLine = "At least I hope you found it endearing 😂";
+      heartDefault.style.display = 'none';
+      heartAlt.style.display = 'block';
+    } else {
+      mainLine = `${snack}, ${genre}, ${mode}. Sounds like a pretty good night to me.`;
+      ctaLine = "Want to watch something together sometime? 🎥💛";
+      heartDefault.style.display = 'block';
+      heartAlt.style.display = 'none';
+    }
+    document.getElementById('recap').textContent =
+      `your picks: ${snack} · ${genre} · ${mode}`;
+
+    finalMsgEl.textContent = '';
+    cta.textContent = '';
+    cta.style.transition = 'opacity 0.5s ease';
+    cta.style.opacity = '0';
+
+    typeText(finalMsgEl, mainLine, 32, ()=>{
+      setTimeout(()=>{
+        cta.style.opacity = '1';
+        typeText(cta, ctaLine, 32, ()=>{
+          const yn = document.getElementById('yn-choices');
+          document.getElementById('yn-response').textContent = '';
+          document.getElementById('yn-yes').disabled = false;
+          document.getElementById('yn-no').disabled = false;
+          yn.style.display = 'block';
+          requestAnimationFrame(()=>{ yn.style.opacity = '1'; });
+        });
+      }, 350);
+    });
+  }
+
+  function respond(choice){
+    const msg = document.getElementById('yn-response');
+    document.getElementById('yn-yes').disabled = true;
+    document.getElementById('yn-no').disabled = true;
+    if(choice === 'yes'){
+      msg.textContent = "Blessed to your heart";
+    } else {
+      msg.textContent = "No worries at all, the offer still stands whenever you're ready 🤍";
+    }
+  }
+</script>
+
+</body>
+</html>
